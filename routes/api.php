@@ -19,5 +19,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::group(['middleware' => ['api']], function () {
-    Route::resource('gss', 'Api\GoogleSpleadSheetController');
+    Route::resource('gss', 'Api\GoogleSpreadSheetController');
 });
