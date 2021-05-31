@@ -55,4 +55,7 @@ $app->singleton(
 // lambda環境
 $app->useStoragePath($_ENV['APP_STORAGE'] ?? $app->storagePath());
 
+// echo'<pre>';
+// var_dump(storage_path());
+// exit;
 return $app;

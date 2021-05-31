@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\GoogleSheet;
 use Illuminate\Http\Request;
 
 class GoogleSpreadSheetController extends Controller
@@ -14,32 +15,65 @@ class GoogleSpreadSheetController extends Controller
      */
     public function index()
     {
-        $sheets = \App\GoogleSheet::instance();
-        $sheet_id = '1SPXuEp4nQJo5qG9DMiIokR6xbqLSUpfKwDwQTiS_gFY';
-        $range = 'A1:H1';
-        $response = $sheets->spreadsheets_values->get($sheet_id, $range);
+        // $client = \App\GoogleSheet::instance();
+        $GoogleSheet = new GoogleSheet;
+        $client = $GoogleSheet::instance();
+        // $sheets = new \Google_Service_Sheets($client);
+        $sheetId = '1SPXuEp4nQJo5qG9DMiIokR6xbqLSUpfKwDwQTiS_gFY';
+        $range = 'G3:I120'; // 雑費枠
+        $response = $GoogleSheet->getSheetsValue($client,$sheetId, $range);
         $values = $response->getValues();
-echo'<pre>';
-var_dump($values);
-exit;
-        $returnText = response()->json([
-            'name' => 'sasuke',
-            'gender' => 1,
-            'mail' => 'sasuke@test.com'
-        ]);
-        return $returnText;
+        $formattedData = $this->formatMiscellaneousExpenses($values);
+        echo json_encode($formattedData);
+        // $returnText = response()->json([
+        //     'name' => 'sasuke',
+        //     'gender' => 1,
+        //     'mail' => 'sasuke@test.com'
+        // ]);
+        // return $returnText;
+    }
+    private function formatMiscellaneousExpenses(array $values)
+    {
+        // 日付ごとにデータをまとめて返す
+        $nowDayName = '';
+        $formatData = [];
+        foreach ($values as $v) {
+            if ($nowDayName === '' || ($nowDayName !== $v[0] && $v[0]!== '')) {
+                $nowDayName =$v[0];
+            }
+            $formatData[$nowDayName][] = $v;
+        }
+        return $formatData;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
-
+        $GoogleSheet = new GoogleSheet;
+        $client = $GoogleSheet::instance();
+        // $sheets = new \Google_Service_Sheets($client);
+        $sheetId = '1SPXuEp4nQJo5qG9DMiIokR6xbqLSUpfKwDwQTiS_gFY';
+        //書き込みたい値
+        $range = 'シート1!A2:B7';
+        // 更新するデータ
+        // TODO 書き込み範囲や内容はポストパラメータで設定する
+        $values = [
+            ["A1", "B1"],
+            ["2019/1/1", "2020/12/31"],
+            ["アイウエオaaaaaa", "かきくけこxxxx"],
+            [10, 20],
+            [100, 200],
+            ['=(A5+A6)', '=(B5+B6)']
+        ];
+        
+        $t = $GoogleSheet->addSheetsValues($client,$sheetId, $range, $values);
+// echo'<pre>';
+// var_dump($t);
+// exit;
+        // $response = $GoogleSheet->addSheetsValues($client,$sheetId, $range, $values);
+echo'<pre>';
+var_dump('OK');
+exit;
     }
 
     /**
