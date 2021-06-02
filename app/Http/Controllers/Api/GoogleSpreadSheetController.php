@@ -23,8 +23,10 @@ class GoogleSpreadSheetController extends Controller
         $range = 'G3:I120'; // 雑費枠
         $response = $GoogleSheet->getSheetsValue($client,$sheetId, $range);
         $values = $response->getValues();
-        $formattedData = $this->formatMiscellaneousExpenses($values);
-        echo json_encode($formattedData);
+        // 一度生で返す
+        // $formattedData = $this->formatMiscellaneousExpenses($values);
+        // echo json_encode($formattedData);
+        echo json_encode($values);
         // $returnText = response()->json([
         //     'name' => 'sasuke',
         //     'gender' => 1,
