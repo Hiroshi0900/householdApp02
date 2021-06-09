@@ -24,9 +24,9 @@ class GoogleSpreadSheetController extends Controller
         $response = $GoogleSheet->getSheetsValue($client,$sheetId, $range);
         $values = $response->getValues();
         // 一度生で返す
-        // $formattedData = $this->formatMiscellaneousExpenses($values);
+        $formattedData = $this->formatMiscellaneousExpenses($values);
         // echo json_encode($formattedData);
-        echo json_encode($values);
+        echo json_encode($formattedData);
         // $returnText = response()->json([
         //     'name' => 'sasuke',
         //     'gender' => 1,
@@ -39,12 +39,15 @@ class GoogleSpreadSheetController extends Controller
         // 日付ごとにデータをまとめて返す
         $nowDayName = '';
         $formatData = [];
+        
         foreach ($values as $v) {
             if ($nowDayName === '' || ($nowDayName !== $v[0] && $v[0]!== '')) {
-                $nowDayName =$v[0];
+                $nowDayName = $v[0];
+                $formatData[$nowDayName][0] = $nowDayName;
             }
-            $formatData[$nowDayName][] = $v;
+            $formatData[$nowDayName][1][] = $v;
         }
+
         return $formatData;
     }
 
