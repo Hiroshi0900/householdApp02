@@ -24,3 +24,8 @@ Route::group(['middleware' => ['api']], function () {
 });
 
 // Route::get('test', 'GoogleSpreadSheetController@add');
+// Route::prefix('summaryData')->group(function () {
+//     // Route::get('/', 'HomeController@index')->name('home');
+// });
+// これでルーティングできる
+Route::get('ver','Api\SummaryDataController@summary');
