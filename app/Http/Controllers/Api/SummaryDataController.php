@@ -37,6 +37,7 @@ class SummaryDataController extends Controller
             if($summaryBodyData[$key] === '') break;
             $formatData[$sum] =$summaryBodyData[$key];
         }
+
         return $formatData;
     }
 
